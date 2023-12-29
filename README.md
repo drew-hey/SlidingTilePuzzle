@@ -30,14 +30,14 @@ Once the game is running in the terminal:
 - If you wish to exit the program before solving the puzzle, you can hit Ctrl + C in the terminal (In Eclipse, you will need to click the red square that says "Terminate").
 
 ## Screenshots
-GUI Start:
+GUI Start: <br>
 ![UI](https://github.com/drew-hey/SlidingTilePuzzle/blob/main/SlidingTilePuzzle/screenshots/ui.png?raw=true)
 
-Selecting the grid size:
+Selecting the grid size: <br>
 ![Grid Size](https://github.com/drew-hey/SlidingTilePuzzle/blob/main/SlidingTilePuzzle/screenshots/grid-size.png?raw=true)
 
-Solved 3x3 grid:
+Solved 3x3 grid: <br>
 ![3x3 Solve](https://github.com/drew-hey/SlidingTilePuzzle/blob/main/SlidingTilePuzzle/screenshots/3x3-solve.png?raw=true)
 
-Solved 4x4 grid:
+Solved 4x4 grid: <br>
 ![4x4 Solve](https://github.com/drew-hey/SlidingTilePuzzle/blob/main/SlidingTilePuzzle/screenshots/4x4-solve.png?raw=true)
