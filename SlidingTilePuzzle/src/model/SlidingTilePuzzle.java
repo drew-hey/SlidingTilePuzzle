@@ -85,7 +85,8 @@ public class SlidingTilePuzzle {
         //for random number generation
         Random random = new Random();
         //move the tiles randomly
-        for (int i = 0; i < 1000; i++) {
+        int n = 1000 * rows;
+        for (int i = 0; i < n; i++) {
             switch (random.nextInt(4)) {
                 case 0:
                     //north of empty tile

@@ -1,6 +1,7 @@
 package view.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -23,6 +24,11 @@ import model.SlidingTilePuzzle;
  */
 public class GUI extends JFrame implements ActionListener {
 
+    /** The width for the GUI. */
+    public static final int WIDTH = 615;
+    /** The height for the GUI. */
+    public static final int HEIGHT = 700;
+    
     /** Serial version UID constant. */
     private static final long serialVersionUID = 1L;
     /** Container for the GUI. */
@@ -70,7 +76,7 @@ public class GUI extends JFrame implements ActionListener {
         c = getContentPane();
         setTitle("Sliding Tile Puzzle");
         setLocation(100, 100);
-        setSize(615, 710);
+        setSize(WIDTH, HEIGHT);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
@@ -124,9 +130,6 @@ public class GUI extends JFrame implements ActionListener {
         setupCenterPanel();
         
         setVisible(true);
-        
-        System.out.println("width: " + buttonGrid[0][0].getWidth());
-        System.out.println("height: " + buttonGrid[0][0].getHeight());
     }
     
     /**
@@ -144,6 +147,7 @@ public class GUI extends JFrame implements ActionListener {
         centerPanel.setLayout(new GridLayout(puzzle.getRows(), puzzle.getCols()));
         int[][] tiles = puzzle.getGrid();
         buttonGrid = new JButton[puzzle.getRows()][puzzle.getCols()];
+        float fontSize = (float) WIDTH / (puzzle.getRows() * 3);
         //iterate through each tile of the puzzle
         for (int i = 0; i < puzzle.getRows(); i++) {
             for (int j = 0; j < puzzle.getCols(); j++) {
@@ -151,7 +155,20 @@ public class GUI extends JFrame implements ActionListener {
                 int value = tiles[i][j];
                 JButton button = new JButton(value == 0 ? null : "" + value);
                 buttonGrid[i][j] = button;
+                button.setFont(button.getFont().deriveFont(fontSize));
                 button.addActionListener(this);
+                
+                //sets the color of the tile, forming a rainbow corner shape
+                for (int k = 1; k < puzzle.getRows(); k++) {
+                    if ((value - 1) / puzzle.getRows() + 1 == k || 
+                            value % puzzle.getRows() == k) {
+                        button.setBackground(Color.getHSBColor((k - 1f) / puzzle.getRows(), 0.6f, 1f));
+                        button.setOpaque(true);
+                        break;
+                    }
+                }
+                //ensures that the empty tile is not colored
+                if (value == 0) button.setOpaque(false);
                 
                 //disables the empty tile, enables all other tiles
                 button.setEnabled(value != 0);
@@ -173,6 +190,16 @@ public class GUI extends JFrame implements ActionListener {
                 int value = tiles[i][j];
                 JButton button = buttonGrid[i][j];
                 button.setText(value == 0 ? null : "" + value);
+                
+                for (int k = 1; k < puzzle.getRows(); k++) {
+                    if ((value - 1) / puzzle.getRows() + 1 == k || 
+                            value % puzzle.getRows() == k) {
+                        button.setBackground(Color.getHSBColor((k - 1f) / puzzle.getRows(), 0.6f, 1f));
+                        button.setOpaque(value != 0);
+                        break;
+                    }
+                }
+                if (value == 0) button.setOpaque(false);
                 
                 button.setEnabled(value != 0);
             }
