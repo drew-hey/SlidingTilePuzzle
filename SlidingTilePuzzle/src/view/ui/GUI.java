@@ -2,6 +2,7 @@ package view.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import model.SlidingTilePuzzle;
 
@@ -35,14 +37,22 @@ public class GUI extends JFrame implements ActionListener {
     private JLabel gridSizeLabel;
     /** Lets the user select a custom grid size. */
     private JComboBox<Integer> gridSizeBox;
+    /** Panel containing the instructions, move count, and timer. */
+    private JPanel northPanel;
     /** Panel in the center of the GUI. */
     private JPanel centerPanel;
+    /** Panel containing the new game button and grid size dropdown box. */
+    private JPanel southPanel;
     /** Provides instructions or tells the user that they have won. */
     private JLabel instructionsLabel;
     /** Tells the user how many moves they have used. */
     private JLabel moveCountLabel;
+    /** Tells the user how long they have spent solving the puzzle. */
+    private JLabel timerLabel;
     /** Tracks the time when the puzzle was started. */
     private long startTime;
+    /** Timer for updating the timerLabel. */
+    private Timer timer;
     
     /**
      * Constructs the GUI.
@@ -60,22 +70,44 @@ public class GUI extends JFrame implements ActionListener {
         c = getContentPane();
         setTitle("Sliding Tile Puzzle");
         setLocation(100, 100);
-        setSize(600, 600);
+        setSize(615, 710);
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         //set up the border layout
         c.setLayout(new BorderLayout());
         
         //set up north panel
-        JPanel northPanel = new JPanel();
+        northPanel = new JPanel();
+        northPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 25, 10));
+        
         instructionsLabel = new JLabel("Move all tiles into position to win!");
+        instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
         northPanel.add(instructionsLabel);
+        
         moveCountLabel = new JLabel("Moves: 0");
+        moveCountLabel.setHorizontalAlignment(JLabel.CENTER);
         northPanel.add(moveCountLabel);
+        
+        timerLabel = new JLabel("Time: 0.000");
+        timerLabel.setHorizontalAlignment(JLabel.CENTER);
+        northPanel.add(timerLabel);
+        
+        //set up the timer
+        timer = new Timer(50, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long endTime = System.currentTimeMillis();
+                long duration = endTime - startTime;
+                timerLabel.setText(String.format("Time: %.3f", (double) duration / 1000));
+            }
+        });
+        
         c.add(northPanel, BorderLayout.NORTH);
         
         //set up south panel
-        JPanel southPanel = new JPanel();
+        southPanel = new JPanel();
+        
         newGameButton = new JButton("New Game");
         newGameButton.addActionListener(this);
         gridSizeLabel = new JLabel(" Grid Size: ");
@@ -92,6 +124,9 @@ public class GUI extends JFrame implements ActionListener {
         setupCenterPanel();
         
         setVisible(true);
+        
+        System.out.println("width: " + buttonGrid[0][0].getWidth());
+        System.out.println("height: " + buttonGrid[0][0].getHeight());
     }
     
     /**
@@ -154,12 +189,13 @@ public class GUI extends JFrame implements ActionListener {
             //creates a new puzzle with the specified size
             Integer size = (Integer)gridSizeBox.getSelectedItem();
             puzzle = new SlidingTilePuzzle(size.intValue(), size.intValue());
-            //updates the labels on screen
-            instructionsLabel.setText("Move all tiles into position to win!");
-            moveCountLabel.setText("Moves: 0");
             //updates the center panel and the button grid
             setupCenterPanel();
             updateGrid();
+            //updates the labels on screen
+            instructionsLabel.setText("Move all tiles into position to win!");
+            moveCountLabel.setText("Moves: 0");
+            timerLabel.setText("Time: 0.000");
         }
         //else, iterate through button grid and see if e.getSource == buttonGrid[i][j]
         //then attempt to move the piece, and update the grid
@@ -176,13 +212,11 @@ public class GUI extends JFrame implements ActionListener {
                         moveCountLabel.setText("Moves: " + puzzle.moveCount());
                         if (puzzle.moveCount() == 1) {
                             startTime = System.currentTimeMillis();
+                            timer.start();
                         }
                         if (puzzle.solved()) {
-                            long endTime = System.currentTimeMillis();
-                            long seconds = (endTime - startTime) / 1000;
-                            long milliseconds = (endTime - startTime) % 1000;
-                            instructionsLabel.setText("Congratulations, you solved the puzzle in " + 
-                                                        seconds + "." + milliseconds + " seconds!");
+                            timer.stop();
+                            instructionsLabel.setText("Congratulations, you solved the puzzle!");
                         } //end if (puzzle.solved())
                     } //end if (e.getSource() == buttonGrid[i][j])
                 } //end for j
