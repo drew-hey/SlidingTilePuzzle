@@ -145,9 +145,9 @@ public class GUI extends JFrame implements ActionListener {
         //creates the centerPanel with the specified grid size
         centerPanel = new JPanel();
         centerPanel.setLayout(new GridLayout(puzzle.getRows(), puzzle.getCols()));
-        int[][] tiles = puzzle.getGrid();
         buttonGrid = new JButton[puzzle.getRows()][puzzle.getCols()];
         float fontSize = (float) WIDTH / (puzzle.getRows() * 3);
+        int[][] tiles = puzzle.getGrid();
         //iterate through each tile of the puzzle
         for (int i = 0; i < puzzle.getRows(); i++) {
             for (int j = 0; j < puzzle.getCols(); j++) {
